@@ -1,0 +1,273 @@
+\documentclass[12pt]{article}
+\usepackage{design_ASC}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{bm}
+
+\setlength\parindent{0pt}
+
+%% -----------------------------
+%% -----------------------------
+\title{Minimizaci\'on de AFD'S}
+
+\author{Eduardo Salas\\ 
+Jorge Nicho\\
+Alvaro Aguirre\\
+Teor\'ia de la computaci\'on\\ 
+\textsc{UTEC}
+}
+
+\date{\today}
+%% -----------------------------
+%% -----------------------------
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\setlength{\droptitle}{-5em}    
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+
+% --------------------------
+% --------------------------
+
+% %%%%%%%%%%%%%%%%%%%
+\section*{Introducci\'on}
+% %%%%%%%%%%%%%%%%%%%
+
+Un autómata finito determinista permite evaluar una entrada de números o caracteres llamada cadena a través de estados que permiten comprobar si la cadena es válida o no. Todos los autómatas tienen un estado inicial, donde empieza la evaluación, y un estado final donde la cadena es aceptada. Los AFD son útiles para diseñar software y supervisar el comportamiento de circuitos digitales o para escanear largos textos y encontrar palabras o frases específicas dentro de ellos.
+
+\section*{Definici\'on del problema}
+% %%%%%%%%%%%%%%%%%%%
+
+Puede existir un AFD que tenga estados equivalentes. Esto quiere decir que es posible juntarlos y crear un AFD con menos estados. En este trabajo explicaremos dos maneras para poder minimizar un AFD. Es ideal que esté minimizado, ya que se reduce el tiempo de procesamiento de las cadenas recibidas, brindando mayor eficiencia.
+
+
+
+\section{Estado del Arte}
+%%%%%%%%%%%%%%%%%%%%%%
+
+Dado un AFD M = ($Q$,$\sum$ ,$\delta$ , $q_0$, $F$), se trata de encontrar un AFD $M'$ con $L(M)$ = $L(M' )$   y tal que $M'$ tenga el m\'inimo n\'umero de estados posible.
+El m\'etodo consiste en encontrar todos los estados que son equivalentes, es decir, que son indistinguibles en el aut\'omata. Por cada clase de estados equivalentes, el aut\'omata m\'inimo necesitar\'a un solo estado.
+Hemos hallado 3 algoritmos para lograr este objetivo: Hopcroft, Moore y Myhill Nerode.
+
+\newpage
+\subsection{Algoritmo de Moore}
+El m\'etodo para minimizar un aut\'omata mediante el algoritmo de moore consiste en encontrar todos los estados que son indistinguibles entre s\'i y sustituirlos por un \'unico estado.
+Para ello lo principal es averiguar qu\'e estados lo son y cu\'ales no. El tiempo de ejecuci\'on de este algoritmo en el peor caso es $O(n^2s)$, donde $s$ es el n\'umero de sustituciones que se realizan en cada paso y $n$ es el n\'umero de estados. 
+
+El m\'etodo para saber qu\'e estados son indistinguibles es el siguiente: 
+
+\begin{enumerate}
+    \item Estados separados en grupos que tienen la misma salida inmediata para la misma entrada.
+    \item Distinguir estados cuyos siguiente estado (s) están en diferentes grupos.
+    \item Reagrupar los estados y repetir el paso anterior hasta que no hay más estados son distinguibles.
+\end{enumerate}
+
+%a. Si hay alg\'un estado inalcanzable eliminarlo.\\
+%b. (i := 0) Marcar todos los estados que pueden distinguirse con la cadena vac\'ia (es decir, todos los finales se pueden distinguir de los no finales).\\
+%c. (i := i + 1) Marcar como distinguibles q y q' si con alg\'un a $\in$ $\sum$ tenemos $\delta$(q, a) y $\delta$(q' , a) dos estados que ahora son distinguibles.\\ 
+%d. Si en el paso anterior se han distinguido nuevos estados, entonces volver al paso.\\
+
+\subsubsection{Ejemplo}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width= 13 cm]{teo3.png}
+    \caption{Aut\'omata ejemplo}
+    \label{fig:my_label}
+\end{figure}
+
+Paso 1: Separamos los estados de aceptación y los de no aceptación.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 10 cm]{tep4.png}
+    \caption{Paso 1}
+    \label{fig:my_label}
+\end{figure}
+
+El conjunto de estados lo llamaremos $P_o$ siendo k = 0 ; quiere decir que tienen 0 transiciones iguales, solo están divididos por aceptación y no aceptación.
+\newpage
+Paso 2: Separamos aquellos estados en cada conjunto de $P_o$ que tenga 1 estado de transición distinguible.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 10 cm]{teo5.png}
+    \caption{Paso 2}
+    \label{fig:my_label}
+\end{figure}
+
+ Por lo tanto en el primer conjunto, todos los valores son indistinguibles. Quiere decir que este no será particionado en $P_1$. 
+ Ahora veamos el segundo conjunto:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 10 cm]{teo6.png}
+    \caption{}
+    \label{fig:my_label}
+\end{figure}
+
+Los movimientos de $q_0$ con 0 y $q_3$ con 0 son $q_3$ y q0 que están en el mismo conjunto de partición en $P_o$. Lo mismo sucede en $q_0$ con 1 y $q_3$ con 1, que son $q_1$ y $q_4$ , que también están en la misma partición en $P_o$.
+Caso contrario sucede con $q_5$, veamos:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 10 cm]{teo7.png}
+    \caption{}
+    \label{fig:my_label}
+\end{figure}
+
+Vemos que no pertenecen al mismo conjunto en $P_o$. Es por ello que $P_1$ quedaría de la siguiente manera:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 9 cm]{teo8.png}
+\end{figure}    
+
+
+\newpage
+Este es el caso final puesto que no se pueden realizar más particiones. El autómata quedaría de la siguiente manera.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 15 cm]{teo9.png}
+    \caption{A\'utomata final}
+    \label{fig:my_label}
+\end{figure}
+
+\subsubsection{Pseudoc\'odigo:}
+\begin{lstlisting}[language=c++]
+MooreReductionProcedure(fsm first_fsm){
+        fsm new_fsm;
+        vector<vector<states>> groups
+        vector<states> acceptance;
+        vector<states> no_acceptance;
+        for i in first_fsm.states
+                if(i acceptance)
+                        acceptance<=i;
+                else
+                        no_acceptance<=i;
+        end for
+        groups<=acceptance and no_acceptance;
+
+        for i in groups.size
+                for j in groups[i].size = vec
+                        if(distinguishable[j])
+                                groups<=distinguishable[j]
+                        else
+                                continue;
+        end for
+
+        append_states(new_fsm,groups)
+
+        return new_fsm;
+}
+
+\end{lstlisting}
+
+
+\subsection{Algoritmo de llenado de tabla}
+
+	El objetivo es identificar a dos estados distintos $A$ y $B$ que puedan ser reemplazados por un solo estado $C$ que se comporte igual a ambos. Se dice que $A$ y $B$ son estados distinguibles si un input $1$ lleva al primer estado a un estado de aceptación y al otro a uno de no aceptación. Otra forma de darse cuenta es ver que un estado sea de aceptación y el otro no.	En la Figura 1 podemos aplicar lo explicado anteriormente. El método de llenado de tabla consiste en juntar pares de estados distinguibles y los que sobren serán equivalentes.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{tru.png}
+    \caption{Ejemplo algoritmo de llenado de tabla}
+    \label{fig:my_label}
+\end{figure}
+
+Primero nos damos cuenta de que los estados $A$, $B$ y $F$ son estados de no aceptación mientras que $C$ , $D$ y $E$ sí. Marcamos todos los pares ($ED$, $EA$, $EF$, $etc$). Luego nos damos cuenta de que $δ(A,1)$ lleva a un estado de aceptación $C$ mientras que $δ(F,1)$ nos lleva a $F$, un estado de no aceptación. Por lo tanto no son equivalentes y marcamos este par en la tabla. Luego repetimos este análisis con todos los pares aún no marcados. El resultado final se aprecia  en \textbf{\textit{Figure 8}}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{tabla.png}
+    \caption{Tabla de pares}
+    \label{fig:my_label}
+\end{figure}
+
+Después listamos los pares de estados no marcados: {(A,B), (C,D), (C,E), (D,E)}. Gráficamente se muestra en \textbf{\textit{Figure 9}}. Finalmente dibujamos el nuevo autómata fusionando los estados equivalentes agrupados en la Figura 3 y el resultado se muestra en \textbf{\textit{Figure 10}}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{FAYNAL.png}
+    \caption{Agrupación visual de los estados equivalentes}
+    \label{fig:my_label}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{finalfinal.png}
+    \caption{AFD minimizado con el algoritmo de llenado de tabla}
+    \label{fig:my_label}
+\end{figure}
+
+\newpage
+
+Los pasos del algoritmo son:
+
+\begin{enumerate}
+\item Dar como input un AFD (P, Q), indicando sus transiciones, estado inicial y estado final.
+\item Construir una matriz n x n, con una fila para cada estado y una columna para cada estado, donde n es la suma del número de estados en P y el número de estados en Q. Solo necesitamos considerar el área debajo de la diagonal de la matriz.
+\item Marcamos con 0 (sin marcar) o 1 (marcado) todos los pares donde PF y Q ∉ F, donde Fes el conjunto de estados finales.
+\item Si hay pares sin marcar (P, Q) de modo que [$\delta$(P,x),$\delta$(Q,x)] esté marcado, marque [P, Q], donde 'x' es un símbolo de entrada. Repita esto hasta que no se puedan hacer más marcas.
+\item Combinamos todos los pares de estados que no han sido marcados y los juntamos en un solo estado correspondiente para formar el AFD minimizado.
+\item Creamos los nuevos estados para el AFD minimizado.
+\item Relacionamos cada estado para formar el AFD minimizado.
+\end{enumerate}
+
+\newpage
+\subsubsection{Pseudoc\'odigo:}
+\begin{lstlisting}[language=c++]
+Table_Filling_Algorithm(A,P){
+        InitializeDFA(A);
+
+        belowDiagonal=length[A]-1;
+        for i=A[1] to length[A]-1
+                for j=A[0] to length[A]-1-belowDiagonal
+                        if Distinguishable(A[i],A[j])
+                            A[i][j]=1;
+                belowDiagonal--;
+                
+        
+        belowDiagonal=length[A]-1;
+        for i=A[1] to length[A]-1
+                for j=A[0] to length[A]-1-belowDiagonal
+                        if A[i][j]=0;
+                            if Check(A[i],A[j])
+                                A[i][j]=1;
+                            
+                belowDiagonal--;
+                
+        n=0;
+        ArrayOfNewStates(P);
+        belowDiagonal=length[A]-1;
+        for i=A[1] to length[A]-1
+                for j=A[0] to length[A]-1-belowDiagonal
+                        if A[i][j]=0;
+                            P[n]=A[i][j];
+                            n++;
+                            
+                belowDiagonal--;
+                
+        Print(P);
+}
+
+\end{lstlisting}
+
+Llenar la tabla, analizar si dos estados son distinguibles y combinar los estados que podrían minimizarse lleva un tiempo polinómico. Debido a que se necesita una cantidad de pares igual a $n(n-1)/2$, tomando en cuenta que existen n estados podemos determinar que la complejidad es de al menos de O($n^2$).
+\newline
+
+\subsection{Referencias}
+
+[1] John E. Hopcroft, Rajeev Motwani & Jeffrey D. Ullman. (1979). Introduction to automata theory, languages, and computation. USA: Addison-Wesley.
+\newline
+\newline
+[2] Daphne A. Norton (2009). Algorithms for Testing Equivalence of Finite
+Automata, with a Grading Tool for JFLAP (Master's thesis). Rochester Institute of Technology, USA.
+
+\end{document}
